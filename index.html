@@ -26,7 +26,12 @@
             return document.getElementById(elementId);
         };
         const substitutions = [
-            [/\s/g, ''],
+            ['í', 'i'],
+            ['ó', 'o'],
+            ['ő', 'ö'],
+            ['ú', 'u'],
+            ['ű', 'ü'],
+            [/[^a-zöü]/g, ''],
             [/(.)\1/g, "$1"],
             ['cs', 'C'],
             ['dz', 'D'],
@@ -37,11 +42,6 @@
             ['sz', 'S'],
             ['ty', 'T'],
             ['zs', 'S'],
-            ['í', 'i'],
-            ['ó', 'o'],
-            ['ő', 'ö'],
-            ['ú', 'u'],
-            ['ű', 'ü']
         ];
         let old = {};
         const my = {
@@ -50,9 +50,6 @@
             },
             set leftValue(value) {
                 getElement("left-input").value = value;
-            },
-            get middleValue() {
-                return getElement("middle-input").value;
             },
             get rightValue() {
                 return getElement("right-input").value;
@@ -71,22 +68,28 @@
             return word == reverseString(word);
         }
         const getFullWord = () => {
-            return my.leftValue + my.middleValue + my.rightValue;
+            return my.leftValue + my.rightValue;
         }
         const updateWord = () => {
             document.getElementById("word").innerHTML = getFullWord();
         }
-        const onLeftInputChange = () => {
+        const handleLeftInputChange = () => {
             if (!stillPalindromish()) {
-                my.rightValue = reverseString(my.leftValue)
+                my.rightValue = reverseString(my.leftValue);
             }
             updateWord();
         }
-        const onRightInputChange = () => {
+        const handleRightInputChange = () => {
             if (!stillPalindromish()) {
-                my.leftValue = reverseString(my.rightValue)
+                my.leftValue = reverseString(my.rightValue);
             }
             updateWord();
+        }
+        const onLeftInputChange = () => {
+            setTimeout(() => handleLeftInputChange(), 1000);
+        }
+        const onRightInputChange = () => {
+            setTimeout(() => handleRightInputChange(), 1000);
         }
     </script>
 </head>
@@ -94,9 +97,6 @@
     <div class="flex-container" style="margin-top: 20px">
         <div style="width: 45%" class="all-input-container">
             <input type="text" id="left-input" class="input left" onkeyup="onLeftInputChange()"/>
-        </div>
-        <div style="width: 30px"  class="all-input-container">
-            <input type="text" id="middle-input" class="input" onkeyup="updateWord()" />
         </div>
         <div style="width: 45%" class="all-input-container">
             <input type="text" id="right-input" class="input" onkeyup="onRightInputChange()"/>
