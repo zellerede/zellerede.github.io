@@ -25,6 +25,17 @@
         const getElement = elementId => {
             return document.getElementById(elementId);
         };
+        const doubleLetters = [
+            ['cs', 'C'],
+            ['dzs', 'J'],
+            ['dz', 'D'],
+            ['gy', 'G'],
+            ['ly', 'j'],
+            ['ny', 'N'],
+            ['sz', 'S'],
+            ['ty', 'T'],
+            ['zs', 'S']
+        ]
         const substitutions = [
             ['í', 'i'],
             ['ó', 'o'],
@@ -33,15 +44,7 @@
             ['ű', 'ü'],
             [/[^a-zöü]/g, ''],
             [/(.)\1/g, "$1"],
-            ['cs', 'C'],
-            ['dz', 'D'],
-            ['dzs', 'J'],
-            ['gy', 'G'],
-            ['ly', 'j'],
-            ['ny', 'N'],
-            ['sz', 'S'],
-            ['ty', 'T'],
-            ['zs', 'S'],
+            ...doubleLetters
         ];
         let old = {};
         const my = {
@@ -59,6 +62,10 @@
             }
         };
         const reverseString = str => str.split("").reverse().join("");
+        const reverseStringWithDoubleLetters = str => {
+            let result = str.toLowerCase();
+            // todo
+        }
         const stillPalindromish = () => {
             let word = getFullWord().toLowerCase();
             substitutions.forEach(subs => {
