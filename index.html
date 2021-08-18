@@ -25,6 +25,25 @@
         const getElement = elementId => {
             return document.getElementById(elementId);
         };
+        const substitutions = [
+            [/\s/g, ''],
+            [/(.)\1/g, "$1"],
+            ['cs', 'C'],
+            ['dz', 'D'],
+            ['dzs', 'J'],
+            ['gy', 'G'],
+            ['ly', 'j'],
+            ['ny', 'N'],
+            ['sz', 'S'],
+            ['ty', 'T'],
+            ['zs', 'S'],
+            ['í', 'i'],
+            ['ó', 'o'],
+            ['ő', 'ö'],
+            ['ú', 'u'],
+            ['ű', 'ü']
+        ];
+        let old = {};
         const my = {
             get leftValue() {
                 return getElement("left-input").value;
@@ -44,7 +63,12 @@
         };
         const reverseString = str => str.split("").reverse().join("");
         const stillPalindromish = () => {
-            return false;  // todo: ignore spaces, lower case, double letters and certain accents
+            let word = getFullWord().toLowerCase();
+            substitutions.forEach(subs => {
+                word = word.replaceAll(subs[0], subs[1]);
+            });
+            console.log(word);
+            return word == reverseString(word);
         }
         const getFullWord = () => {
             return my.leftValue + my.middleValue + my.rightValue;
@@ -55,19 +79,18 @@
         const onLeftInputChange = () => {
             if (!stillPalindromish()) {
                 my.rightValue = reverseString(my.leftValue)
-                updateWord();
             }
+            updateWord();
         }
         const onRightInputChange = () => {
             if (!stillPalindromish()) {
                 my.leftValue = reverseString(my.rightValue)
-                updateWord();
             }
+            updateWord();
         }
     </script>
 </head>
 <body>
-    <h2>EZ Palindrom</h2>
     <div class="flex-container" style="margin-top: 20px">
         <div style="width: 45%" class="all-input-container">
             <input type="text" id="left-input" class="input left" onkeyup="onLeftInputChange()"/>
