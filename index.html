@@ -25,7 +25,7 @@
         const getElement = elementId => {
             return document.getElementById(elementId);
         };
-        const doubleLetters = [
+        const doubleLettersSubs = [
             ['cs', 'C'],
             ['dzs', 'J'],
             ['dz', 'D'],
@@ -34,8 +34,8 @@
             ['ny', 'N'],
             ['sz', 'S'],
             ['ty', 'T'],
-            ['zs', 'S']
-        ]
+            ['zs', 'Z']
+        ];
         const substitutions = [
             ['í', 'i'],
             ['ó', 'o'],
@@ -44,8 +44,11 @@
             ['ű', 'ü'],
             [/[^a-zöü]/g, ''],
             [/(.)\1/g, "$1"],
-            ...doubleLetters
+            ...doubleLettersSubs,
+            ['Z', 'S']  // if we want  sz <-> zs  interchangeability
         ];
+        const doubleLettersBackSubs = doubleLettersSubs.map(subs => [subs[1], subs[0]]);
+
         let old = {};
         const my = {
             get leftValue() {
@@ -61,16 +64,23 @@
                 getElement("right-input").value = value;
             }
         };
+        const applySubs = (word, subsToApply) => {
+            subsToApply.forEach(subs => {
+                word = word.replaceAll(subs[0], subs[1]);
+            });
+            return word;
+        };
         const reverseString = str => str.split("").reverse().join("");
         const reverseStringWithDoubleLetters = str => {
             let result = str.toLowerCase();
-            // todo
+            result = applySubs(result, doubleLettersSubs);
+            result = reverseString(result);
+            result = applySubs(result, doubleLettersBackSubs);
+            return result;
         }
         const stillPalindromish = () => {
             let word = getFullWord().toLowerCase();
-            substitutions.forEach(subs => {
-                word = word.replaceAll(subs[0], subs[1]);
-            });
+            word = applySubs(word, substitutions);
             console.log(word);
             return word == reverseString(word);
         }
@@ -82,13 +92,13 @@
         }
         const handleLeftInputChange = () => {
             if (!stillPalindromish()) {
-                my.rightValue = reverseString(my.leftValue);
+                my.rightValue = reverseStringWithDoubleLetters(my.leftValue);
             }
             updateWord();
         }
         const handleRightInputChange = () => {
             if (!stillPalindromish()) {
-                my.leftValue = reverseString(my.rightValue);
+                my.leftValue = reverseStringWithDoubleLetters(my.rightValue);
             }
             updateWord();
         }
