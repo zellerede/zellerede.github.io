@@ -22,9 +22,7 @@
         }
     </style>
     <script type="text/javascript">
-        const getElement = elementId => {
-            return document.getElementById(elementId);
-        };
+        const getElement = id => document.getElementById(id);
         const doubleLettersSubs = [
             ['cs', 'C'],
             ['dzs', 'J'],
@@ -42,14 +40,15 @@
             ['ő', 'ö'],
             ['ú', 'u'],
             ['ű', 'ü'],
-            [/[^a-zöü]/g, ''],
             [/(.)\1/g, "$1"],
+            [/[^a-zöü ]/g, ''],
             ...doubleLettersSubs,
-            ['Z', 'S']  // if we want  sz <-> zs  interchangeability
+            ['Z', 'S'],  // if we want  sz <-> zs  interchangeability
+            [/\s/g, '']
         ];
         const doubleLettersBackSubs = doubleLettersSubs.map(subs => [subs[1], subs[0]]);
 
-        let old = {};
+        let edits = {};
         const my = {
             get leftValue() {
                 return getElement("left-input").value;
@@ -77,43 +76,48 @@
             result = reverseString(result);
             result = applySubs(result, doubleLettersBackSubs);
             return result;
-        }
+        };
         const stillPalindromish = () => {
             let word = getFullWord().toLowerCase();
             word = applySubs(word, substitutions);
             console.log(word);
             return word == reverseString(word);
-        }
+        };
         const getFullWord = () => {
             return my.leftValue + my.rightValue;
-        }
+        };
         const updateWord = () => {
             document.getElementById("word").innerHTML = getFullWord();
-        }
+        };
         const handleLeftInputChange = () => {
             if (!stillPalindromish()) {
                 my.rightValue = reverseStringWithDoubleLetters(my.leftValue);
             }
             updateWord();
-        }
+        };
         const handleRightInputChange = () => {
             if (!stillPalindromish()) {
                 my.leftValue = reverseStringWithDoubleLetters(my.rightValue);
             }
             updateWord();
-        }
-        const onLeftInputChange = () => {
+        };
+        const saveCaret = event => {
+            console.log('keydown', event.target.selectionStart);
+        };
+        const onLeftInputChange = event => {
+            console.log('keyup', event.target.selectionStart);
             setTimeout(() => handleLeftInputChange(), 1800);
-        }
+        };
         const onRightInputChange = () => {
             setTimeout(() => handleRightInputChange(), 1800);
-        }
+        };
     </script>
 </head>
 <body>
     <div class="flex-container" style="margin-top: 20px">
         <div style="width: 45%" class="all-input-container">
-            <input type="text" id="left-input" class="input left" onkeyup="onLeftInputChange()"/>
+            <input type="text" id="left-input" class="input left"
+                   onkeydown="saveCaret(event)" onkeyup="onLeftInputChange(event)"/>
         </div>
         <div style="width: 45%" class="all-input-container">
             <input type="text" id="right-input" class="input" onkeyup="onRightInputChange()"/>
