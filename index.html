@@ -20,6 +20,10 @@
         #word {
             font-size: 20px;
         }
+        ::placeholder {
+            color: gray;
+            opacity: 0.2;
+          }
     </style>
     <script type="text/javascript">
         const getElement = id => document.getElementById(id);
@@ -28,7 +32,7 @@
             ['dzs', 'J'],
             ['dz', 'D'],
             ['gy', 'G'],
-            ['ly', 'j'],
+            ['ly', 'Y'],
             ['ny', 'N'],
             ['sz', 'S'],
             ['ty', 'T'],
@@ -41,8 +45,9 @@
             ['ú', 'u'],
             ['ű', 'ü'],
             [/(.)\1/g, "$1"],
-            [/[^a-zöü ]/g, ''],
+            [/[^a-zéáöü ]/g, ''],
             ...doubleLettersSubs,
+            ['Y', 'j'],
             ['Z', 'S'],  // if we want  sz <-> zs  interchangeability
             [/\s/g, '']
         ];
@@ -115,12 +120,16 @@
 </head>
 <body>
     <div class="flex-container" style="margin-top: 20px">
+        <h2>Palindróma-szerkesztő</h2>
+    </div>
+    <div class="flex-container" style="margin-top: 20px">
         <div style="width: 45%" class="all-input-container">
-            <input type="text" id="left-input" class="input left"
+            <input type="text" id="left-input" class="input left" placeholder="edit"
                    onkeydown="saveCaret(event)" onkeyup="onLeftInputChange(event)"/>
         </div>
         <div style="width: 45%" class="all-input-container">
-            <input type="text" id="right-input" class="input" onkeyup="onRightInputChange()"/>
+            <input type="text" id="right-input" class="input" placeholder="ide"
+                   onkeyup="onRightInputChange()"/>
         </div>
     </div>
     <div class="flex-container">
